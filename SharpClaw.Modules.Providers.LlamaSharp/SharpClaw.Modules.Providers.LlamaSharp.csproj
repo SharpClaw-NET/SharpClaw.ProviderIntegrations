@@ -3,6 +3,8 @@
         <PackageId>SharpClaw.Modules.Providers.LlamaSharp</PackageId>
         <Description>SharpClaw provider module that registers local GGUF inference through LLamaSharp.</Description>
         <PackageTags>SharpClaw;providers;llamasharp;llama;gguf;local;ai</PackageTags>
+        <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackManagedLlamaSharpSidecarRuntimeDependencies</TargetsForTfmSpecificContentInPackage>
+        <NoWarn>$(NoWarn);NU5100</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,6 +27,19 @@
         <Content Update="$(NuGetPackageRoot)llamasharp.backend.*\*\LLamaSharpRuntimes\**\*.*"
                  Pack="false" />
     </ItemGroup>
+
+    <Target Name="PackManagedLlamaSharpSidecarRuntimeDependencies"
+            DependsOnTargets="ResolvePackageAssets">
+        <ItemGroup>
+            <_ManagedLlamaSharpSidecarDependency Include="@(RuntimeCopyLocalItems)"
+                                                 Condition="'%(RuntimeCopyLocalItems.Extension)' == '.dll'
+                                                            and !$([System.String]::Copy('%(RuntimeCopyLocalItems.Filename)').StartsWith('SharpClaw.'))" />
+            <TfmSpecificPackageFile Include="@(_ManagedLlamaSharpSidecarDependency)"
+                                    PackagePath="contentFiles\any\$(TargetFramework)\%(_ManagedLlamaSharpSidecarDependency.Filename)%(_ManagedLlamaSharpSidecarDependency.Extension)"
+                                    BuildAction="Content"
+                                    PackageCopyToOutput="true" />
+        </ItemGroup>
+    </Target>
 
     <ItemGroup Condition="'$(RuntimeIdentifier)' == '' OR $(RuntimeIdentifier.StartsWith('win'))">
         <PackageReference Include="LLamaSharp.Backend.Cuda12.Windows" />
