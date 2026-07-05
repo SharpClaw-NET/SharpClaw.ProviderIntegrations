@@ -1,7 +1,7 @@
 {
   "id": "sharpclaw_providers_openai_compat",
   "displayName": "OpenAI-Compatible Providers",
-  "version": "0.1.0-beta",
+  "version": "0.1.1-beta",
   "toolPrefix": "po",
   "runtime": "dotnet",
   "hostMode": "sidecar",

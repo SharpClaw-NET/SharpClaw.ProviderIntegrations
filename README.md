@@ -1,16 +1,12 @@
 # SharpClaw.ProviderIntegrations
 
-SharpClaw.ProviderIntegrations provides provider integration packages for
-SharpClaw hosts and modules. The packages are intended to be consumed through
-published package references, without referencing `SharpClaw.Application.*`
-projects or local source shims.
-
-`SharpClaw.Modules.Providers.OpenAICompatible` registers OpenAI, DeepSeek,
+SharpClaw.ProviderIntegrations gives SharpClaw hosts provider modules for
+remote AI services. Add `SharpClaw.Modules.Providers.OpenAICompatible` to make
+OpenAI-style providers available at runtime, including OpenAI, DeepSeek,
 OpenRouter, Eden AI, Z.AI, Vercel AI Gateway, xAI, Groq, Cerebras, Mistral,
-GitHub Copilot, Minimax, custom OpenAI-compatible, Google Gemini OpenAI shim,
-and Google Vertex AI OpenAI shim providers.
+GitHub Copilot, Minimax, custom OpenAI-compatible endpoints, Google Gemini
+OpenAI shim, and Google Vertex AI OpenAI shim.
 
-`SharpClaw.Providers.Common` supplies the shared provider client, parameter,
-capability, credential, and plugin helpers used by provider integration
-packages. Consumers should reference the provider packages they need and let
-NuGet resolve shared provider dependencies normally.
+`SharpClaw.Providers.Common` supplies provider client, parameter, capability,
+credential, and plugin helpers for modules that implement provider
+integrations.
