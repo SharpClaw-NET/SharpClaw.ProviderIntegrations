@@ -11,9 +11,9 @@
         <InformationalVersion>0.1.4-beta</InformationalVersion>
         <Authors>mkn8rn</Authors>
         <Company>SharpClaw</Company>
-        <RepositoryUrl>https://github.com/mkn8rn/SharpClaw.ProviderIntegrations</RepositoryUrl>
+        <RepositoryUrl>https://github.com/SharpClaw-NET/SharpClaw.ProviderIntegrations</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/mkn8rn/SharpClaw.ProviderIntegrations</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/SharpClaw-NET/SharpClaw.ProviderIntegrations</PackageProjectUrl>
         <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <PackageReadmeFile>README.md</PackageReadmeFile>
