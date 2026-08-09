@@ -3,6 +3,8 @@
         <PackageId>SharpClaw.Modules.Providers.Ollama</PackageId>
         <Description>SharpClaw provider module that registers user-managed Ollama server integrations.</Description>
         <PackageTags>SharpClaw;providers;ollama;local;ai</PackageTags>
+        <ProviderModuleId>sharpclaw_providers_ollama</ProviderModuleId>
+        <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackProviderModuleEntryAssembly</TargetsForTfmSpecificContentInPackage>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 

@@ -3,6 +3,8 @@
         <PackageId>SharpClaw.Modules.Providers.Google</PackageId>
         <Description>SharpClaw provider module that registers native Google Gemini and Vertex AI integrations.</Description>
         <PackageTags>SharpClaw;providers;google;gemini;vertex-ai;ai</PackageTags>
+        <ProviderModuleId>sharpclaw_providers_google</ProviderModuleId>
+        <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackProviderModuleEntryAssembly</TargetsForTfmSpecificContentInPackage>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 

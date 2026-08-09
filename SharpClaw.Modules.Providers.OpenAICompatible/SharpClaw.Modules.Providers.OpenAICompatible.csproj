@@ -3,6 +3,8 @@
         <PackageId>SharpClaw.Modules.Providers.OpenAICompatible</PackageId>
         <Description>SharpClaw provider module that registers OpenAI-compatible remote provider integrations.</Description>
         <PackageTags>SharpClaw;providers;openai;ai</PackageTags>
+        <ProviderModuleId>sharpclaw_providers_openai_compat</ProviderModuleId>
+        <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackProviderModuleEntryAssembly</TargetsForTfmSpecificContentInPackage>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 

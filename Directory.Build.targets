@@ -1,0 +1,11 @@
+<Project>
+    <Target Name="PackProviderModuleEntryAssembly"
+            Condition="'$(ProviderModuleId)' != '' and Exists('$(TargetPath)')">
+        <ItemGroup>
+            <TfmSpecificPackageFile Include="$(TargetPath)"
+                                    PackagePath="contentFiles\any\$(TargetFramework)\modules\$(ProviderModuleId)\$(TargetFileName)"
+                                    BuildAction="Content"
+                                    PackageCopyToOutput="true" />
+        </ItemGroup>
+    </Target>
+</Project>

@@ -3,6 +3,8 @@
         <PackageId>SharpClaw.Modules.Providers.Anthropic</PackageId>
         <Description>SharpClaw provider module that registers the native Anthropic Messages API integration.</Description>
         <PackageTags>SharpClaw;providers;anthropic;ai</PackageTags>
+        <ProviderModuleId>sharpclaw_providers_anthropic</ProviderModuleId>
+        <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackProviderModuleEntryAssembly</TargetsForTfmSpecificContentInPackage>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
