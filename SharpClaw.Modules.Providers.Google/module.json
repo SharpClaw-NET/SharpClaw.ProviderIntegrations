@@ -5,7 +5,7 @@
   "enabled": true,
   "toolPrefix": "pg",
   "runtime": "dotnet",
-  "hostMode": "sidecar",
+  "hostMode": "in-process",
   "entryAssembly": "SharpClaw.Modules.Providers.Google.dll",
   "moduleType": "SharpClaw.Modules.Providers.Google.GoogleProvidersModule",
   "minHostVersion": "0.1.0-beta",

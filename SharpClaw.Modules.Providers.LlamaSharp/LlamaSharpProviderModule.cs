@@ -1,13 +1,9 @@
-using System.Text.Json;
 using LLama.Native;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SharpClaw.Contracts.Modules;
 using SharpClaw.Contracts.Providers;
-using SharpClaw.Modules.Providers.LlamaSharp.Cli;
 using SharpClaw.Modules.Providers.LlamaSharp.Clients;
-using SharpClaw.Modules.Providers.LlamaSharp.Handlers;
 using SharpClaw.Modules.Providers.LlamaSharp.LocalInference;
 using SharpClaw.Modules.Providers.LlamaSharp.Services;
 using SharpClaw.Providers.Common;
@@ -16,21 +12,23 @@ using SharpClaw.Providers.LocalCommon;
 namespace SharpClaw.Modules.Providers.LlamaSharp;
 
 /// <summary>
-/// Default module: registers the LlamaSharp llama.cpp provider plugin
-/// inside its sidecar, owns local-model records through host-backed module
-/// config, and exposes <c>/models/local</c> REST + <c>localmodel</c>
-/// CLI surfaces.
+/// Default module: registers the LlamaSharp provider plugin in the host
+/// process and owns local-model records through module storage.
 /// </summary>
-public sealed class LlamaSharpProviderModule : ISharpClawRuntimeModule
+public sealed class LlamaSharpProviderModule : ISharpClawModule
 {
     private static int _nativeBackendConfigured;
 
-    public string Id => "sharpclaw_providers_llamasharp";
-    public string DisplayName => "LlamaSharp Provider";
-    public string ToolPrefix => "po3";
+    public ModuleIdentity Identity { get; } = new(
+        "sharpclaw_providers_llamasharp",
+        "LlamaSharp Provider",
+        "po3");
 
-    public void ConfigureServices(IServiceCollection services)
+    public void Configure(ISharpClawModuleBuilder module)
     {
+        ArgumentNullException.ThrowIfNull(module);
+        var services = module.Services;
+
         // L-015: configure the LLamaSharp native backend exactly once.
         // NativeLibraryConfig is sticky — the first call to a LLama API
         // freezes the backend selection, so this must run before any
@@ -103,14 +101,15 @@ public sealed class LlamaSharpProviderModule : ISharpClawRuntimeModule
                         : ModelDownloadManager.ResolveSourceFolder(sourceUrl).ToLowerInvariant();
                 },
                 requiresApiKey: false,
-                ownerModuleId: "sharpclaw_providers_llamasharp");
+                ownerModuleId: Identity.Id);
         });
+
+        module.Storage.Add(StorageContract());
     }
 
-    public IReadOnlyList<ModuleStorageContractDescriptor> GetStorageContracts() =>
-    [
+    private ModuleStorageContractDescriptor StorageContract() =>
         new(
-            Id,
+            Identity.Id,
             "local_models",
             StorageOperations(),
             "Local GGUF model file records owned by the LlamaSharp provider module.",
@@ -121,65 +120,7 @@ public sealed class LlamaSharpProviderModule : ISharpClawRuntimeModule
                 new("updatedAt", ModuleStorageIndexValueKind.DateTime, AllowsRange: true),
             ],
             MaxDocumentBytes: 131_072,
-            MaxBatchSize: 100),
-    ];
-
-    public IReadOnlyList<ModuleToolDefinition> GetToolDefinitions() => [];
-
-    public IReadOnlyList<ModuleFrontendContribution> GetFrontendContributions() =>
-    [
-        new(
-            Id: "llamasharp.local-models.settings",
-            ModuleId: Id,
-            Point: FrontendContributionPoint.SettingsPage,
-            BuilderKey: "model-list",
-            Label: "Local Models",
-            Icon: "\uE8B7",
-            Tooltip: "Manage local GGUF models owned by the LlamaSharp provider module.",
-            RequiredModuleId: Id,
-            Order: 200,
-            List: new ModuleFrontendList(
-                ListInternalApiPath: "/models/local",
-                DeleteInternalApiPathTemplate: "/models/local/{id}",
-                EmptyText: "No local models have been downloaded yet.",
-                Columns:
-                [
-                    new("sourceUrl", "Source"),
-                    new("filePath", "File"),
-                ])),
-    ];
-
-    public IReadOnlyList<ModuleCliCommand> GetCliCommands() =>
-    [
-        new(
-            Name: "localmodel",
-            Aliases: ["lm"],
-            Scope: ModuleCliScope.TopLevel,
-            Description: "Local GGUF model management (LlamaSharp)",
-            UsageLines:
-            [
-                "localmodel download <url> [--name <alias>] [--quant <Q4_K_M>] [--gpu-layers <n>]",
-                "localmodel download list <url>           List available GGUF files at a URL",
-                "localmodel list                          List downloaded local models",
-                "localmodel load <id> [--gpu-layers <n>] [--ctx <size>] [--mmproj <path>]",
-                "localmodel unload <id>                   Unpin a loaded model",
-                "localmodel mmproj <id> <path|none>       Set or clear CLIP/mmproj path",
-                "localmodel delete <id>                   Remove a downloaded local model",
-            ],
-            Handler: LocalModelCliCommand.HandleAsync),
-    ];
-
-    public void MapEndpoints(object app)
-    {
-        var endpoints = (IEndpointRouteBuilder)app;
-        endpoints.MapLocalModelEndpoints();
-    }
-
-    public Task<string> ExecuteToolAsync(
-        string toolName, JsonElement parameters, AgentJobContext job,
-        IServiceProvider sp, CancellationToken ct)
-        => throw new InvalidOperationException(
-            $"Module '{Id}' does not register any tools.");
+            MaxBatchSize: 100);
 
     private static IReadOnlyList<ModuleStorageOperationDescriptor> StorageOperations() =>
     [

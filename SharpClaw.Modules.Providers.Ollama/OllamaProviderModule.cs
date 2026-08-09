@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using SharpClaw.Contracts.Modules;
 using SharpClaw.Contracts.Providers;
@@ -13,29 +12,24 @@ namespace SharpClaw.Modules.Providers.Ollama;
 /// user-managed Ollama server and overrides model listing to use
 /// Ollama's <c>/api/tags</c> endpoint).
 /// </summary>
-public sealed class OllamaProviderModule : ISharpClawCoreModule
+public sealed class OllamaProviderModule : ISharpClawModule
 {
-    public string Id => "sharpclaw_providers_ollama";
-    public string DisplayName => "Ollama Provider";
-    public string ToolPrefix => "po2";
+    public ModuleIdentity Identity { get; } = new(
+        "sharpclaw_providers_ollama",
+        "Ollama Provider",
+        "po2");
 
-    public void ConfigureServices(IServiceCollection services)
+    public void Configure(ISharpClawModuleBuilder module)
     {
+        ArgumentNullException.ThrowIfNull(module);
+
         var caps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForGeneric);
-        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "ollama", "Ollama (local)", false,
             (options, credential) => new OllamaApiClient(options.Endpoint, credential), caps,
             parameterSpec: ProviderParameterSpecs.Ollama,
             supportsAutomaticEndpointDiscovery: true,
             requiresApiKey: false,
-            ownerModuleId: "sharpclaw_providers_ollama"));
+            ownerModuleId: Identity.Id));
     }
-
-    public IReadOnlyList<ModuleToolDefinition> GetToolDefinitions() => [];
-
-    public Task<string> ExecuteToolAsync(
-        string toolName, JsonElement parameters, AgentJobContext job,
-        IServiceProvider sp, CancellationToken ct)
-        => throw new InvalidOperationException(
-            $"Module '{Id}' does not register any tools.");
 }

@@ -390,7 +390,7 @@ public sealed class GoogleVertexAIApiClientBehaviorTests
     public void ModuleRegistersImplementedNativeVertexProvider()
     {
         var services = new ServiceCollection();
-        new GoogleProvidersModule().ConfigureServices(services);
+        new GoogleProvidersModule().Configure(ModuleTestBuilder.For(services));
 
         using var serviceProvider = services.BuildServiceProvider();
         var plugin = serviceProvider.GetServices<IProviderPlugin>()

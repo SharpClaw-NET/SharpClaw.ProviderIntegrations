@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using SharpClaw.Contracts.Modules;
 using SharpClaw.Contracts.Providers;
@@ -15,14 +14,18 @@ namespace SharpClaw.Modules.Providers.OpenAICompatible;
 /// as the wire-format base; the heuristics are imported from
 /// <see cref="ProviderCapabilityHeuristics"/>.
 /// </summary>
-public sealed class OpenAICompatibleProvidersModule : ISharpClawCoreModule
+public sealed class OpenAICompatibleProvidersModule : ISharpClawModule
 {
-    public string Id => "sharpclaw_providers_openai_compat";
-    public string DisplayName => "OpenAI-Compatible Providers";
-    public string ToolPrefix => "po";
+    public ModuleIdentity Identity { get; } = new(
+        "sharpclaw_providers_openai_compat",
+        "OpenAI-Compatible Providers",
+        "po");
 
-    public void ConfigureServices(IServiceCollection services)
+    public void Configure(ISharpClawModuleBuilder module)
     {
+        ArgumentNullException.ThrowIfNull(module);
+        var services = module.Services;
+
         var openAiCaps  = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForOpenAI);
         var googleCaps  = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForGoogle);
         var deepSeekCaps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForDeepSeek);
@@ -137,18 +140,6 @@ public sealed class OpenAICompatibleProvidersModule : ISharpClawCoreModule
 
     // No tools, resources, endpoints, or CLI commands — this module only
     // contributes provider plugins through DI.
-    public IReadOnlyList<ModuleContractExport> ExportedContracts => [];
-    public IReadOnlyList<ModuleResourceTypeDescriptor> GetResourceTypeDescriptors() => [];
-    public IReadOnlyList<ModuleToolDefinition> GetToolDefinitions() => [];
-    public IReadOnlyList<ModuleCliCommand> GetCliCommands() => [];
-
-    public void MapEndpoints(object app) { }
-
-    public Task<string> ExecuteToolAsync(
-        string toolName, JsonElement parameters, AgentJobContext job,
-        IServiceProvider sp, CancellationToken ct)
-        => throw new InvalidOperationException(
-            $"Module '{Id}' does not register any tools.");
 }
 
 /// <summary>

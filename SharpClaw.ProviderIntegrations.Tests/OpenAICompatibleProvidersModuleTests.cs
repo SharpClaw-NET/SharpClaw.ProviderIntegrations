@@ -10,12 +10,12 @@ namespace SharpClaw.ProviderIntegrations.Tests;
 public sealed class OpenAICompatibleProvidersModuleTests
 {
     [Test]
-    public void ConfigureServicesRegistersOpenAICompatibleProviderFamily()
+    public void ConfigureRegistersOpenAICompatibleProviderFamily()
     {
         var module = new OpenAICompatibleProvidersModule();
         var services = new ServiceCollection();
 
-        module.ConfigureServices(services);
+        module.Configure(ModuleTestBuilder.For(services));
 
         using var provider = services.BuildServiceProvider();
         var plugins = provider.GetServices<IProviderPlugin>().ToList();
@@ -42,26 +42,22 @@ public sealed class OpenAICompatibleProvidersModuleTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(module.Id, Is.EqualTo("sharpclaw_providers_openai_compat"));
-            Assert.That(module.DisplayName, Is.EqualTo("OpenAI-Compatible Providers"));
-            Assert.That(module.ToolPrefix, Is.EqualTo("po"));
+            Assert.That(module.Identity.Id, Is.EqualTo("sharpclaw_providers_openai_compat"));
+            Assert.That(module.Identity.DisplayName, Is.EqualTo("OpenAI-Compatible Providers"));
+            Assert.That(module.Identity.ToolPrefix, Is.EqualTo("po"));
             Assert.That(plugins, Has.Count.EqualTo(expectedKeys.Length));
             Assert.That(providerKeys, Is.EquivalentTo(expectedKeys));
-            Assert.That(plugins.All(plugin => plugin.OwnerModuleId == module.Id), Is.True);
-            Assert.That(module.ExportedContracts, Is.Empty);
-            Assert.That(module.GetResourceTypeDescriptors(), Is.Empty);
-            Assert.That(module.GetToolDefinitions(), Is.Empty);
-            Assert.That(module.GetCliCommands(), Is.Empty);
+            Assert.That(plugins.All(plugin => plugin.OwnerModuleId == module.Identity.Id), Is.True);
         });
     }
 
     [Test]
-    public void ConfigureServicesPreservesSpecialProviderSettings()
+    public void ConfigurePreservesSpecialProviderSettings()
     {
         var module = new OpenAICompatibleProvidersModule();
         var services = new ServiceCollection();
 
-        module.ConfigureServices(services);
+        module.Configure(ModuleTestBuilder.For(services));
 
         using var provider = services.BuildServiceProvider();
         var plugins = provider.GetServices<IProviderPlugin>().ToDictionary(plugin => plugin.ProviderKey);
@@ -95,7 +91,7 @@ public sealed class OpenAICompatibleProvidersModuleTests
             Assert.That(root.GetProperty("entryAssembly").GetString(), Is.EqualTo("SharpClaw.Modules.Providers.OpenAICompatible.dll"));
             Assert.That(root.GetProperty("moduleType").GetString(), Is.EqualTo("SharpClaw.Modules.Providers.OpenAICompatible.OpenAICompatibleProvidersModule"));
             Assert.That(root.GetProperty("runtime").GetString(), Is.EqualTo("dotnet"));
-            Assert.That(root.GetProperty("hostMode").GetString(), Is.EqualTo("sidecar"));
+            Assert.That(root.GetProperty("hostMode").GetString(), Is.EqualTo("in-process"));
         });
     }
 }

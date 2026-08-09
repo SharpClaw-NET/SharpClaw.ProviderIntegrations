@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using SharpClaw.Contracts.Modules;
 using SharpClaw.Contracts.Providers;
@@ -11,27 +10,22 @@ namespace SharpClaw.Modules.Providers.Anthropic;
 /// Default module: registers the native Anthropic provider plugin.
 /// Uses Anthropic's <c>/v1/messages</c> wire format (not OpenAI-compatible).
 /// </summary>
-public sealed class AnthropicProviderModule : ISharpClawCoreModule
+public sealed class AnthropicProviderModule : ISharpClawModule
 {
-    public string Id => "sharpclaw_providers_anthropic";
-    public string DisplayName => "Anthropic Provider";
-    public string ToolPrefix => "pa";
+    public ModuleIdentity Identity { get; } = new(
+        "sharpclaw_providers_anthropic",
+        "Anthropic Provider",
+        "pa");
 
-    public void ConfigureServices(IServiceCollection services)
+    public void Configure(ISharpClawModuleBuilder module)
     {
+        ArgumentNullException.ThrowIfNull(module);
+
         var caps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForAnthropic);
-        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "anthropic", "Anthropic", false,
             (_, credential) => new AnthropicApiClient(credential), caps,
             parameterSpec: ProviderParameterSpecs.Anthropic,
-            ownerModuleId: "sharpclaw_providers_anthropic"));
+            ownerModuleId: Identity.Id));
     }
-
-    public IReadOnlyList<ModuleToolDefinition> GetToolDefinitions() => [];
-
-    public Task<string> ExecuteToolAsync(
-        string toolName, JsonElement parameters, AgentJobContext job,
-        IServiceProvider sp, CancellationToken ct)
-        => throw new InvalidOperationException(
-            $"Module '{Id}' does not register any tools.");
 }

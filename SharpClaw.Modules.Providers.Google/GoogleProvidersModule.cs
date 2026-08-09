@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using SharpClaw.Contracts.Modules;
 using SharpClaw.Contracts.Providers;
@@ -13,35 +12,30 @@ namespace SharpClaw.Modules.Providers.Google;
 /// OpenAI-compatible shim — that lives in
 /// <c>SharpClaw.Modules.Providers.OpenAICompatible</c>).
 /// </summary>
-public sealed class GoogleProvidersModule : ISharpClawCoreModule
+public sealed class GoogleProvidersModule : ISharpClawModule
 {
-    public string Id => "sharpclaw_providers_google";
-    public string DisplayName => "Google Native Providers";
-    public string ToolPrefix => "pg";
+    public ModuleIdentity Identity { get; } = new(
+        "sharpclaw_providers_google",
+        "Google Native Providers",
+        "pg");
 
-    public void ConfigureServices(IServiceCollection services)
+    public void Configure(ISharpClawModuleBuilder module)
     {
+        ArgumentNullException.ThrowIfNull(module);
+
         var caps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForGoogle);
 
-        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "google-vertex-ai", "Google Vertex AI", false,
             (options, credential) => new GoogleVertexAIApiClient(options.Endpoint, credential), caps,
             parameterSpec: ProviderParameterSpecs.GoogleVertexAI,
             supportsAutomaticEndpointDiscovery: true,
-            ownerModuleId: "sharpclaw_providers_google"));
+            ownerModuleId: Identity.Id));
 
-        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "google-gemini", "Google Gemini", false,
             (_, credential) => new GoogleGeminiApiClient(credential), caps,
             parameterSpec: ProviderParameterSpecs.GoogleGemini,
-            ownerModuleId: "sharpclaw_providers_google"));
+            ownerModuleId: Identity.Id));
     }
-
-    public IReadOnlyList<ModuleToolDefinition> GetToolDefinitions() => [];
-
-    public Task<string> ExecuteToolAsync(
-        string toolName, JsonElement parameters, AgentJobContext job,
-        IServiceProvider sp, CancellationToken ct)
-        => throw new InvalidOperationException(
-            $"Module '{Id}' does not register any tools.");
 }

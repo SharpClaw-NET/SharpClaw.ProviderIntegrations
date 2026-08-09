@@ -4,7 +4,7 @@
   "version": "0.1.4-beta",
   "toolPrefix": "po",
   "runtime": "dotnet",
-  "hostMode": "sidecar",
+  "hostMode": "in-process",
   "entryAssembly": "SharpClaw.Modules.Providers.OpenAICompatible.dll",
   "moduleType": "SharpClaw.Modules.Providers.OpenAICompatible.OpenAICompatibleProvidersModule",
   "minHostVersion": "0.1.0-beta",

@@ -250,7 +250,7 @@ public sealed class DeepSeekApiClientBehaviorTests
     public void ModuleRegistersDeepSeekProvider()
     {
         var services = new ServiceCollection();
-        new OpenAICompatibleProvidersModule().ConfigureServices(services);
+        new OpenAICompatibleProvidersModule().Configure(ModuleTestBuilder.For(services));
 
         using var serviceProvider = services.BuildServiceProvider();
         var plugin = serviceProvider.GetServices<IProviderPlugin>()
@@ -415,7 +415,7 @@ public sealed class EdenAIApiClientBehaviorTests
     public void ModuleRegistersEdenAiProvider()
     {
         var services = new ServiceCollection();
-        new OpenAICompatibleProvidersModule().ConfigureServices(services);
+        new OpenAICompatibleProvidersModule().Configure(ModuleTestBuilder.For(services));
 
         using var serviceProvider = services.BuildServiceProvider();
         var plugin = serviceProvider.GetServices<IProviderPlugin>()
@@ -456,7 +456,7 @@ public sealed class EdenAIApiClientBehaviorTests
     public void ProviderTypesCanBeDerivedFromRegisteredPluginMetadata()
     {
         var services = new ServiceCollection();
-        new OpenAICompatibleProvidersModule().ConfigureServices(services);
+        new OpenAICompatibleProvidersModule().Configure(ModuleTestBuilder.For(services));
 
         using var serviceProvider = services.BuildServiceProvider();
         var plugins = serviceProvider.GetServices<IProviderPlugin>().ToDictionary(

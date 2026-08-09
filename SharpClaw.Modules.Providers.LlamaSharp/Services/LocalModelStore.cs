@@ -23,6 +23,7 @@ public sealed class LocalModelStore
             storageGateway,
             ModuleId,
             StorageName,
+            ModuleId,
             JsonOptions);
     }
 
