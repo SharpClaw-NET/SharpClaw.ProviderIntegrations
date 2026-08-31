@@ -14,7 +14,7 @@ public sealed class LocalModelService(
     HuggingFaceUrlResolver urlResolver,
     ModelDownloadManager downloadManager,
     LocalInferenceProcessManager processManager,
-    IModelRegistrar registrar)
+    IModelRegistrar registrar) : ILocalModelEndpointOperations
 {
     /// <summary>
     /// Downloads a model and registers it under an explicit provider.

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SharpClaw.Contracts.Modules;
 using SharpClaw.Contracts.Providers;
 using SharpClaw.Modules.Providers.LlamaSharp.Clients;
+using SharpClaw.Modules.Providers.LlamaSharp.Handlers;
 using SharpClaw.Modules.Providers.LlamaSharp.LocalInference;
 using SharpClaw.Modules.Providers.LlamaSharp.Services;
 using SharpClaw.Providers.Common;
@@ -15,7 +16,7 @@ namespace SharpClaw.Modules.Providers.LlamaSharp;
 /// Default module: registers the LlamaSharp provider plugin in the host
 /// process and owns local-model records through module storage.
 /// </summary>
-public sealed class LlamaSharpProviderModule : ISharpClawModule
+public sealed class LlamaSharpProviderModule : ISharpClawModule, ISharpClawApplicationModule
 {
     private static int _nativeBackendConfigured;
 
@@ -74,6 +75,7 @@ public sealed class LlamaSharpProviderModule : ISharpClawModule
 
         // Module services.
         services.AddScoped<LocalModelService>();
+        services.AddScoped<LocalModelEndpointHandler>();
         services.AddScoped<LocalModelLookup>();
         services.AddScoped<ILocalModelFileLookup>(sp => sp.GetRequiredService<LocalModelLookup>());
 
@@ -105,6 +107,13 @@ public sealed class LlamaSharpProviderModule : ISharpClawModule
         });
 
         module.Storage.Add(StorageContract());
+    }
+
+    public void ConfigureApplication(ISharpClawApplicationBuilder application)
+    {
+        ArgumentNullException.ThrowIfNull(application);
+        foreach (var route in LocalModelEndpointHandler.EndpointRoutes)
+            application.Endpoints.AddHttp<LocalModelEndpointHandler>(route);
     }
 
     private ModuleStorageContractDescriptor StorageContract() =>

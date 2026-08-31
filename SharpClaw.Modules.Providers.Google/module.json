@@ -1,7 +1,7 @@
 {
   "id": "sharpclaw_providers_google",
   "displayName": "Google Native Providers",
-  "version": "0.1.5-beta",
+  "version": "0.1.6-beta",
   "enabled": true,
   "toolPrefix": "pg",
   "runtime": "dotnet",

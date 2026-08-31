@@ -9,13 +9,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="SharpClaw.Contracts" />
         <ProjectReference Include="..\SharpClaw.Providers.Common\SharpClaw.Providers.Common.csproj" />
         <ProjectReference Include="..\SharpClaw.Providers.LocalCommon\SharpClaw.Providers.LocalCommon.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="SharpClaw.ProviderIntegrations.Tests" />
     </ItemGroup>
 
     <ItemGroup>
