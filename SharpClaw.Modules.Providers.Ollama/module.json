@@ -1,7 +1,7 @@
 {
   "id": "sharpclaw_providers_ollama",
   "displayName": "Ollama Provider",
-  "version": "0.1.8-beta",
+  "version": "0.1.9-beta",
   "enabled": true,
   "toolPrefix": "po2",
   "runtime": "dotnet",
