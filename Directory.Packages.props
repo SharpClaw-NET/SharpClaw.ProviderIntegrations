@@ -17,7 +17,7 @@
         <PackageVersion Include="LLamaSharp.Backend.Cuda12.Linux" Version="0.27.0" />
         <PackageVersion Include="LLamaSharp.Backend.Vulkan.Windows" Version="0.27.0" />
         <PackageVersion Include="LLamaSharp.Backend.Vulkan.Linux" Version="0.27.0" />
-        <PackageVersion Include="SharpClaw.Contracts" Version="[0.5.0-beta.36]" />
-        <PackageVersion Include="SharpClaw.ModuleSDK" Version="[0.5.0-beta.17]" />
+        <PackageVersion Include="SharpClaw.Contracts" Version="[0.5.0-beta.37]" />
+        <PackageVersion Include="SharpClaw.ModuleSDK" Version="[0.5.0-beta.18]" />
     </ItemGroup>
 </Project>
