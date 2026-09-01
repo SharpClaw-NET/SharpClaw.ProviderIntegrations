@@ -1,11 +1,14 @@
 <Project>
-    <Target Name="PackProviderModuleEntryAssembly"
-            Condition="'$(ProviderModuleId)' != '' and Exists('$(TargetPath)')">
-        <ItemGroup>
-            <TfmSpecificPackageFile Include="$(TargetPath)"
-                                    PackagePath="contentFiles\any\$(TargetFramework)\modules\$(ProviderModuleId)\$(TargetFileName)"
-                                    BuildAction="Content"
-                                    PackageCopyToOutput="true" />
-        </ItemGroup>
-    </Target>
+  <Target Name="UseExactOwnedProjectReferenceVersions"
+          BeforeTargets="GenerateNuspec"
+          DependsOnTargets="_GetProjectReferenceVersions"
+          Condition="'$(IsPackable)' != 'false'">
+    <ItemGroup>
+      <_ProjectReferencesWithVersions Update="@(_ProjectReferencesWithVersions)"
+                                      Condition="'%(_ProjectReferencesWithVersions.ProjectVersion)' != ''
+                                                 and !$([System.String]::Copy('%(_ProjectReferencesWithVersions.ProjectVersion)').StartsWith('['))">
+        <ProjectVersion>[%(_ProjectReferencesWithVersions.ProjectVersion)]</ProjectVersion>
+      </_ProjectReferencesWithVersions>
+    </ItemGroup>
+  </Target>
 </Project>

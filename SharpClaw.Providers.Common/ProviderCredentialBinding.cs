@@ -2,21 +2,6 @@ using SharpClaw.Contracts.Providers;
 
 namespace SharpClaw.Providers.Common;
 
-/// <summary>
-/// Optional provider-adapter surface for binding host-resolved credentials
-/// outside the public SharpClaw.Contracts provider construction contract.
-/// </summary>
-public interface IProviderCredentialBoundPlugin
-{
-    IProviderApiClient CreateClient(
-        ProviderClientOptions options,
-        string credential);
-
-    IProviderCostFeed? CreateCostFeed(
-        ProviderClientOptions options,
-        string credential);
-}
-
 public static class ProviderCredentialBinding
 {
     public static IProviderApiClient CreateClient(
