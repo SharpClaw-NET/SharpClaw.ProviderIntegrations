@@ -21,7 +21,9 @@
     <ItemGroup>
         <PackageReference Include="LLamaSharp" />
         <PackageReference Include="LlamaSharp.ToolCallEnvelopes" />
-        <PackageReference Include="LLamaSharp.Backend.Cpu" />
+        <PackageReference Include="LLamaSharp.Backend.Cpu"
+                          IncludeAssets="all"
+                          PrivateAssets="none" />
     </ItemGroup>
 
     <Target Name="ExcludeLlamaSharpBackendContentFromPackage"
@@ -49,12 +51,20 @@
     </Target>
 
     <ItemGroup Condition="'$(RuntimeIdentifier)' == '' OR $(RuntimeIdentifier.StartsWith('win'))">
-        <PackageReference Include="LLamaSharp.Backend.Cuda12.Windows" />
-        <PackageReference Include="LLamaSharp.Backend.Vulkan.Windows" />
+        <PackageReference Include="LLamaSharp.Backend.Cuda12.Windows"
+                          IncludeAssets="all"
+                          PrivateAssets="none" />
+        <PackageReference Include="LLamaSharp.Backend.Vulkan.Windows"
+                          IncludeAssets="all"
+                          PrivateAssets="none" />
     </ItemGroup>
     <ItemGroup Condition="'$(RuntimeIdentifier)' == '' OR $(RuntimeIdentifier.StartsWith('linux'))">
-        <PackageReference Include="LLamaSharp.Backend.Cuda12.Linux" />
-        <PackageReference Include="LLamaSharp.Backend.Vulkan.Linux" />
+        <PackageReference Include="LLamaSharp.Backend.Cuda12.Linux"
+                          IncludeAssets="all"
+                          PrivateAssets="none" />
+        <PackageReference Include="LLamaSharp.Backend.Vulkan.Linux"
+                          IncludeAssets="all"
+                          PrivateAssets="none" />
     </ItemGroup>
 
     <ItemGroup>
