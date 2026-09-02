@@ -97,10 +97,10 @@ public sealed class RemainingProviderModuleTests
         });
     }
 
-    [TestCase("sharpclaw_providers_anthropic", "SharpClaw.Modules.Providers.Anthropic.dll", "SharpClaw.Modules.Providers.Anthropic.AnthropicProviderModule", "0.1.16-beta")]
-    [TestCase("sharpclaw_providers_google", "SharpClaw.Modules.Providers.Google.dll", "SharpClaw.Modules.Providers.Google.GoogleProvidersModule", "0.1.16-beta")]
-    [TestCase("sharpclaw_providers_ollama", "SharpClaw.Modules.Providers.Ollama.dll", "SharpClaw.Modules.Providers.Ollama.OllamaProviderModule", "0.1.16-beta")]
-    [TestCase("sharpclaw_providers_llamasharp", "SharpClaw.Modules.Providers.LlamaSharp.dll", "SharpClaw.Modules.Providers.LlamaSharp.LlamaSharpProviderModule", "0.1.16-beta")]
+    [TestCase("sharpclaw_providers_anthropic", "SharpClaw.Modules.Providers.Anthropic.dll", "SharpClaw.Modules.Providers.Anthropic.AnthropicProviderModule", "0.5.0-beta.1")]
+    [TestCase("sharpclaw_providers_google", "SharpClaw.Modules.Providers.Google.dll", "SharpClaw.Modules.Providers.Google.GoogleProvidersModule", "0.5.0-beta.1")]
+    [TestCase("sharpclaw_providers_ollama", "SharpClaw.Modules.Providers.Ollama.dll", "SharpClaw.Modules.Providers.Ollama.OllamaProviderModule", "0.5.0-beta.1")]
+    [TestCase("sharpclaw_providers_llamasharp", "SharpClaw.Modules.Providers.LlamaSharp.dll", "SharpClaw.Modules.Providers.LlamaSharp.LlamaSharpProviderModule", "0.5.0-beta.1")]
     public void ModuleManifestCopiesToOutputWithExpectedHostMetadata(
         string moduleId,
         string entryAssembly,
