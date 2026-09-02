@@ -24,10 +24,16 @@
         <PackageReference Include="LLamaSharp.Backend.Cpu" />
     </ItemGroup>
 
-    <ItemGroup>
-        <Content Update="$(NuGetPackageRoot)llamasharp.backend.*\*\LLamaSharpRuntimes\**\*.*"
-                 Pack="false" />
-    </ItemGroup>
+    <Target Name="ExcludeLlamaSharpBackendContentFromPackage"
+            BeforeTargets="_GetPackageFiles">
+        <ItemGroup>
+            <Content Update="@(Content)"
+                     Condition="'%(Content.Link)' != ''
+                                and $([System.String]::Copy('%(Content.Link)').StartsWith('runtimes\\'))">
+                <Pack>false</Pack>
+            </Content>
+        </ItemGroup>
+    </Target>
 
     <Target Name="PackManagedLlamaSharpSidecarRuntimeDependencies"
             DependsOnTargets="ResolvePackageAssets">
