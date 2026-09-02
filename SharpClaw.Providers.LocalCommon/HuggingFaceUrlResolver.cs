@@ -86,7 +86,7 @@ public sealed partial class HuggingFaceUrlResolver
         for (var attempt = 1; attempt <= MaxRetries; attempt++)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
-            request.Headers.UserAgent.ParseAdd("SharpClaw.ProviderIntegrations/1.0 (+https://github.com/mkn8rn/SharpClaw.ProviderIntegrations)");
+            request.Headers.UserAgent.ParseAdd("SharpClaw.ProviderIntegrations/1.0 (+https://github.com/SharpClaw-NET/SharpClaw.ProviderIntegrations)");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             if (!string.IsNullOrWhiteSpace(_hfToken))
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _hfToken);

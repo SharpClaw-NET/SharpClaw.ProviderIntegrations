@@ -22,7 +22,7 @@ WRITTEN OFFER
 The source code for any program binaries or compressed scripts that are
 included with SharpClaw.ProviderIntegrations can be freely obtained at the
 following URL:
-https://github.com/mkn8rn/SharpClaw.ProviderIntegrations
+https://github.com/SharpClaw-NET/SharpClaw.ProviderIntegrations
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
