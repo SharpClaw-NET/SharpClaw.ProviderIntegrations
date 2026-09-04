@@ -1,13 +1,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Modules.Providers.LlamaSharp.LocalModels;
 using SharpClaw.Modules.Providers.LlamaSharp.Services;
 
 namespace SharpClaw.Modules.Providers.LlamaSharp.Handlers;
 
 /// <summary>Executes the LlamaSharp local-model HTTP routes.</summary>
-public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
+public sealed class LocalModelEndpointHandler : IHttpEndpointHandler
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {
@@ -37,10 +37,10 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
         _operations = operations ?? throw new ArgumentNullException(nameof(operations));
     }
 
-    public static IReadOnlyList<ModuleEndpointRouteDescriptor> EndpointRoutes { get; } =
+    public static IReadOnlyList<EndpointRouteDescriptor> EndpointRoutes { get; } =
         Routes.Select(route => route.Descriptor).ToArray();
 
-    public async ValueTask<ModuleHttpEndpointResponse> InvokeAsync(
+    public async ValueTask<HttpEndpointResponse> InvokeAsync(
         HostEndpointRouteRequest request,
         IHostActionEntry hostActionEntry,
         CancellationToken cancellationToken)
@@ -69,7 +69,7 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
         };
     }
 
-    private async ValueTask<ModuleHttpEndpointResponse> DownloadAsync(
+    private async ValueTask<HttpEndpointResponse> DownloadAsync(
         HostEndpointRouteRequest request,
         CancellationToken cancellationToken)
     {
@@ -87,7 +87,7 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
         return Json(200, result);
     }
 
-    private async ValueTask<ModuleHttpEndpointResponse> ListDownloadsAsync(
+    private async ValueTask<HttpEndpointResponse> ListDownloadsAsync(
         HostEndpointRouteRequest request,
         CancellationToken cancellationToken)
     {
@@ -102,7 +102,7 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
             await _operations.ListAvailableFilesAsync(url, cancellationToken));
     }
 
-    private async ValueTask<ModuleHttpEndpointResponse> LoadAsync(
+    private async ValueTask<HttpEndpointResponse> LoadAsync(
         HostEndpointRouteRequest request,
         CancellationToken cancellationToken)
     {
@@ -116,7 +116,7 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
         return Json(200, new { modelId, pinned = true });
     }
 
-    private async ValueTask<ModuleHttpEndpointResponse> UnloadAsync(
+    private async ValueTask<HttpEndpointResponse> UnloadAsync(
         HostEndpointRouteRequest request,
         CancellationToken cancellationToken)
     {
@@ -124,10 +124,10 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
             return Error(400, "endpoint_invalid_request");
 
         await _operations.UnloadModelAsync(modelId, cancellationToken);
-        return ModuleHttpEndpointResponse.Empty(200);
+        return HttpEndpointResponse.Empty(200);
     }
 
-    private async ValueTask<ModuleHttpEndpointResponse> DeleteAsync(
+    private async ValueTask<HttpEndpointResponse> DeleteAsync(
         HostEndpointRouteRequest request,
         CancellationToken cancellationToken)
     {
@@ -135,11 +135,11 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
             return Error(400, "endpoint_invalid_request");
 
         return await _operations.DeleteLocalModelAsync(modelId, cancellationToken)
-            ? ModuleHttpEndpointResponse.Empty(204)
-            : ModuleHttpEndpointResponse.Empty(404);
+            ? HttpEndpointResponse.Empty(204)
+            : HttpEndpointResponse.Empty(404);
     }
 
-    private async ValueTask<ModuleHttpEndpointResponse> SetMmprojAsync(
+    private async ValueTask<HttpEndpointResponse> SetMmprojAsync(
         HostEndpointRouteRequest request,
         CancellationToken cancellationToken)
     {
@@ -208,23 +208,23 @@ public sealed class LocalModelEndpointHandler : IModuleHttpEndpointHandler
         RouteOperation operation,
         string suffix = "") =>
         new(
-            new ModuleEndpointRouteDescriptor(
+            new EndpointRouteDescriptor(
                 id,
                 pathPrefix + suffix,
                 method,
                 HostEndpointTransport.Http),
             operation);
 
-    private static ModuleHttpEndpointResponse Json<T>(int statusCode, T value) =>
-        ModuleHttpEndpointResponse.Json(
+    private static HttpEndpointResponse Json<T>(int statusCode, T value) =>
+        HttpEndpointResponse.Json(
             statusCode,
             JsonSerializer.SerializeToElement(value, JsonOptions));
 
-    private static ModuleHttpEndpointResponse Error(int statusCode, string code) =>
+    private static HttpEndpointResponse Error(int statusCode, string code) =>
         Json(statusCode, new { error = code });
 
     private sealed record RouteDefinition(
-        ModuleEndpointRouteDescriptor Descriptor,
+        EndpointRouteDescriptor Descriptor,
         RouteOperation Operation);
 
     private enum RouteOperation

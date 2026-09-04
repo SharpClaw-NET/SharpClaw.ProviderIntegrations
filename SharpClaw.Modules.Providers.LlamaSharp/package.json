@@ -6,7 +6,7 @@
   "toolPrefix": "po3",
   "runtime": "dotnet",
   "hostMode": "in-process",
-  "moduleType": "SharpClaw.Modules.Providers.LlamaSharp.LlamaSharpProviderModule",
+  "entryType": "SharpClaw.Modules.Providers.LlamaSharp.LlamaSharpProviderModule",
   "entryAssembly": "SharpClaw.Modules.Providers.LlamaSharp.dll",
   "minHostVersion": "0.1.0-beta",
   "author": "mkn8rn",

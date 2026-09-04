@@ -7,7 +7,7 @@
   "runtime": "dotnet",
   "hostMode": "in-process",
   "entryAssembly": "SharpClaw.Modules.Providers.Google.dll",
-  "moduleType": "SharpClaw.Modules.Providers.Google.GoogleProvidersModule",
+  "entryType": "SharpClaw.Modules.Providers.Google.GoogleProvidersModule",
   "minHostVersion": "0.1.0-beta",
   "author": "mkn8rn",
   "description": "Native Google Gemini and Vertex AI provider integrations.",

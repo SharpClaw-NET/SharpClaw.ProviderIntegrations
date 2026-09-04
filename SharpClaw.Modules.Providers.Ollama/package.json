@@ -7,7 +7,7 @@
   "runtime": "dotnet",
   "hostMode": "in-process",
   "entryAssembly": "SharpClaw.Modules.Providers.Ollama.dll",
-  "moduleType": "SharpClaw.Modules.Providers.Ollama.OllamaProviderModule",
+  "entryType": "SharpClaw.Modules.Providers.Ollama.OllamaProviderModule",
   "minHostVersion": "0.1.0-beta",
   "author": "mkn8rn",
   "description": "Ollama provider integration for user-managed local Ollama servers.",

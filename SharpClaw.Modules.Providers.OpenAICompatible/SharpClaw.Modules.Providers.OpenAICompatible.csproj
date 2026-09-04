@@ -11,15 +11,16 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="SharpClaw.Contracts" />
+        <PackageReference Include="SharpClaw.ModuleSDK" PrivateAssets="all" IncludeAssets="compile;build;buildTransitive" />
         <ProjectReference Include="..\SharpClaw.Providers.Common\SharpClaw.Providers.Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="module.json"
-                 Link="modules\sharpclaw_providers_openai_compat\module.json"
+        <Content Include="package.json"
+                 Link="contributions\sharpclaw_providers_openai_compat\package.json"
                  CopyToOutputDirectory="PreserveNewest"
                  Pack="true"
-                 PackagePath="contentFiles\any\$(TargetFramework)\modules\sharpclaw_providers_openai_compat\module.json"
+                 PackagePath="contentFiles\any\$(TargetFramework)\contributions\sharpclaw_providers_openai_compat\package.json"
                  PackageCopyToOutput="true" />
     </ItemGroup>
 </Project>

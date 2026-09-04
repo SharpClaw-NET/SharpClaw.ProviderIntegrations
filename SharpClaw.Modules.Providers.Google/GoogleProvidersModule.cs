@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Contracts.Providers;
+using SharpClaw.ModuleSDK;
 using SharpClaw.Modules.Providers.Google.Clients;
 using SharpClaw.Providers.Common;
 
@@ -19,23 +20,23 @@ public sealed class GoogleProvidersModule : ISharpClawModule
         "Google Native Providers",
         "pg");
 
-    public void Configure(ISharpClawModuleBuilder module)
+    public void ConfigureServices(IServiceCollection services)
     {
-        ArgumentNullException.ThrowIfNull(module);
+        ArgumentNullException.ThrowIfNull(services);
 
         var caps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForGoogle);
 
-        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "google-vertex-ai", "Google Vertex AI", false,
             (options, credential) => new GoogleVertexAIApiClient(options.Endpoint, credential), caps,
             parameterSpec: ProviderParameterSpecs.GoogleVertexAI,
             supportsAutomaticEndpointDiscovery: true,
-            ownerModuleId: Identity.Id));
+            OwnerId: Identity.Id));
 
-        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "google-gemini", "Google Gemini", false,
             (_, credential) => new GoogleGeminiApiClient(credential), caps,
             parameterSpec: ProviderParameterSpecs.GoogleGemini,
-            ownerModuleId: Identity.Id));
+            OwnerId: Identity.Id));
     }
 }

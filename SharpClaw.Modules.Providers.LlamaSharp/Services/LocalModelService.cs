@@ -4,7 +4,7 @@ using SharpClaw.Providers.LocalCommon;
 using SharpClaw.Modules.Providers.LlamaSharp.LocalModels;
 using SharpClaw.Contracts.DTOs.Models;
 using SharpClaw.Contracts.Models;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Contracts.Providers;
 
 namespace SharpClaw.Modules.Providers.LlamaSharp.Services;

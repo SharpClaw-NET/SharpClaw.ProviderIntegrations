@@ -23,11 +23,11 @@ public sealed class SimpleProviderPlugin(
     bool supportsAutomaticEndpointDiscovery = false,
     bool isSeedable = true,
     bool requiresApiKey = true,
-    string? ownerModuleId = null) : IProviderPlugin, IProviderCredentialBoundPlugin
+    string? OwnerId = null) : IProviderPlugin, IProviderCredentialBoundPlugin
 {
     public string ProviderKey { get; } = providerKey;
     public string DisplayName { get; } = displayName;
-    public string OwnerModuleId { get; } = ownerModuleId ?? string.Empty;
+    public string OwnerId { get; } = OwnerId ?? string.Empty;
     public bool RequiresEndpoint { get; } = requiresEndpoint;
     public bool SupportsAutomaticEndpointDiscovery { get; } = supportsAutomaticEndpointDiscovery;
     public bool IsSeedable { get; } = isSeedable;

@@ -7,7 +7,7 @@
   "runtime": "dotnet",
   "hostMode": "in-process",
   "entryAssembly": "SharpClaw.Modules.Providers.Anthropic.dll",
-  "moduleType": "SharpClaw.Modules.Providers.Anthropic.AnthropicProviderModule",
+  "entryType": "SharpClaw.Modules.Providers.Anthropic.AnthropicProviderModule",
   "minHostVersion": "0.1.0-beta",
   "author": "mkn8rn",
   "description": "Native Anthropic Messages API provider integration.",

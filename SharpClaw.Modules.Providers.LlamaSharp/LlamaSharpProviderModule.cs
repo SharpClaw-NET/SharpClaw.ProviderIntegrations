@@ -1,8 +1,9 @@
 using LLama.Native;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Contracts.Providers;
+using SharpClaw.ModuleSDK;
 using SharpClaw.Modules.Providers.LlamaSharp.Clients;
 using SharpClaw.Modules.Providers.LlamaSharp.Handlers;
 using SharpClaw.Modules.Providers.LlamaSharp.LocalInference;
@@ -16,7 +17,7 @@ namespace SharpClaw.Modules.Providers.LlamaSharp;
 /// Default module: registers the LlamaSharp provider plugin in the host
 /// process and owns local-model records through module storage.
 /// </summary>
-public sealed class LlamaSharpProviderModule : ISharpClawModule, ISharpClawApplicationModule
+public sealed class LlamaSharpProviderModule : ISharpClawModule
 {
     private static int _nativeBackendConfigured;
 
@@ -25,10 +26,9 @@ public sealed class LlamaSharpProviderModule : ISharpClawModule, ISharpClawAppli
         "LlamaSharp Provider",
         "po3");
 
-    public void Configure(ISharpClawModuleBuilder module)
+    public void ConfigureServices(IServiceCollection services)
     {
-        ArgumentNullException.ThrowIfNull(module);
-        var services = module.Services;
+        ArgumentNullException.ThrowIfNull(services);
 
         // L-015: configure the LLamaSharp native backend exactly once.
         // NativeLibraryConfig is sticky — the first call to a LLama API
@@ -103,43 +103,38 @@ public sealed class LlamaSharpProviderModule : ISharpClawModule, ISharpClawAppli
                         : ModelDownloadManager.ResolveSourceFolder(sourceUrl).ToLowerInvariant();
                 },
                 requiresApiKey: false,
-                ownerModuleId: Identity.Id);
+                OwnerId: Identity.Id);
         });
 
-        module.Storage.Add(StorageContract());
-    }
-
-    public void ConfigureApplication(ISharpClawApplicationBuilder application)
-    {
-        ArgumentNullException.ThrowIfNull(application);
+        services.AddStorage(StorageContract());
         foreach (var route in LocalModelEndpointHandler.EndpointRoutes)
-            application.Endpoints.AddHttp<LocalModelEndpointHandler>(route);
+            services.AddHttpEndpoint<LocalModelEndpointHandler>(route);
     }
 
-    private ModuleStorageContractDescriptor StorageContract() =>
+    private ScopedStorageContractDescriptor StorageContract() =>
         new(
             Identity.Id,
             "local_models",
             StorageOperations(),
             "Local GGUF model file records owned by the LlamaSharp provider module.",
             [
-                new("modelId", ModuleStorageIndexValueKind.String),
-                new("status", ModuleStorageIndexValueKind.String),
-                new("sourceUrl", ModuleStorageIndexValueKind.String),
-                new("updatedAt", ModuleStorageIndexValueKind.DateTime, AllowsRange: true),
+                new("modelId", ScopedStorageIndexValueKind.String),
+                new("status", ScopedStorageIndexValueKind.String),
+                new("sourceUrl", ScopedStorageIndexValueKind.String),
+                new("updatedAt", ScopedStorageIndexValueKind.DateTime, AllowsRange: true),
             ],
             MaxDocumentBytes: 131_072,
             MaxBatchSize: 100);
 
-    private static IReadOnlyList<ModuleStorageOperationDescriptor> StorageOperations() =>
+    private static IReadOnlyList<ScopedStorageOperationDescriptor> StorageOperations() =>
     [
-        new(ModuleStorageOperations.Get),
-        new(ModuleStorageOperations.Upsert),
-        new(ModuleStorageOperations.BatchUpsert),
-        new(ModuleStorageOperations.Delete),
-        new(ModuleStorageOperations.BatchDelete),
-        new(ModuleStorageOperations.List),
-        new(ModuleStorageOperations.Query),
+        new(ScopedStorageOperations.Get),
+        new(ScopedStorageOperations.Upsert),
+        new(ScopedStorageOperations.BatchUpsert),
+        new(ScopedStorageOperations.Delete),
+        new(ScopedStorageOperations.BatchDelete),
+        new(ScopedStorageOperations.List),
+        new(ScopedStorageOperations.Query),
     ];
 
     public async Task ShutdownAsync()

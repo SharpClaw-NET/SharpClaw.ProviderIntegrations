@@ -15,7 +15,7 @@ public sealed class OpenAICompatibleProvidersModuleTests
         var module = new OpenAICompatibleProvidersModule();
         var services = new ServiceCollection();
 
-        module.Configure(ModuleTestBuilder.For(services));
+        ModuleTestBuilder.Configure(module, services);
 
         using var provider = services.BuildServiceProvider();
         var plugins = provider.GetServices<IProviderPlugin>().ToList();
@@ -47,7 +47,7 @@ public sealed class OpenAICompatibleProvidersModuleTests
             Assert.That(module.Identity.ToolPrefix, Is.EqualTo("po"));
             Assert.That(plugins, Has.Count.EqualTo(expectedKeys.Length));
             Assert.That(providerKeys, Is.EquivalentTo(expectedKeys));
-            Assert.That(plugins.All(plugin => plugin.OwnerModuleId == module.Identity.Id), Is.True);
+            Assert.That(plugins.All(plugin => plugin.OwnerId == module.Identity.Id), Is.True);
         });
     }
 
@@ -57,7 +57,7 @@ public sealed class OpenAICompatibleProvidersModuleTests
         var module = new OpenAICompatibleProvidersModule();
         var services = new ServiceCollection();
 
-        module.Configure(ModuleTestBuilder.For(services));
+        ModuleTestBuilder.Configure(module, services);
 
         using var provider = services.BuildServiceProvider();
         var plugins = provider.GetServices<IProviderPlugin>().ToDictionary(plugin => plugin.ProviderKey);
@@ -76,9 +76,9 @@ public sealed class OpenAICompatibleProvidersModuleTests
     {
         var manifestPath = Path.Combine(
             TestContext.CurrentContext.TestDirectory,
-            "modules",
+            "contributions",
             "sharpclaw_providers_openai_compat",
-            "module.json");
+            "package.json");
 
         Assert.That(File.Exists(manifestPath), Is.True);
 
@@ -89,7 +89,7 @@ public sealed class OpenAICompatibleProvidersModuleTests
         {
             Assert.That(root.GetProperty("id").GetString(), Is.EqualTo("sharpclaw_providers_openai_compat"));
             Assert.That(root.GetProperty("entryAssembly").GetString(), Is.EqualTo("SharpClaw.Modules.Providers.OpenAICompatible.dll"));
-            Assert.That(root.GetProperty("moduleType").GetString(), Is.EqualTo("SharpClaw.Modules.Providers.OpenAICompatible.OpenAICompatibleProvidersModule"));
+            Assert.That(root.GetProperty("entryType").GetString(), Is.EqualTo("SharpClaw.Modules.Providers.OpenAICompatible.OpenAICompatibleProvidersModule"));
             Assert.That(root.GetProperty("runtime").GetString(), Is.EqualTo("dotnet"));
             Assert.That(root.GetProperty("hostMode").GetString(), Is.EqualTo("in-process"));
         });

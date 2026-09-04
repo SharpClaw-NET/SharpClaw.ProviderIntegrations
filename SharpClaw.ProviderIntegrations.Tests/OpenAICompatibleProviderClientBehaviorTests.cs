@@ -250,7 +250,7 @@ public sealed class DeepSeekApiClientBehaviorTests
     public void ModuleRegistersDeepSeekProvider()
     {
         var services = new ServiceCollection();
-        new OpenAICompatibleProvidersModule().Configure(ModuleTestBuilder.For(services));
+        ModuleTestBuilder.Configure(new OpenAICompatibleProvidersModule(), services);
 
         using var serviceProvider = services.BuildServiceProvider();
         var plugin = serviceProvider.GetServices<IProviderPlugin>()
@@ -259,7 +259,7 @@ public sealed class DeepSeekApiClientBehaviorTests
         Assert.Multiple(() =>
         {
             Assert.That(plugin.DisplayName, Is.EqualTo("DeepSeek"));
-            Assert.That(plugin.OwnerModuleId, Is.EqualTo("sharpclaw_providers_openai_compat"));
+            Assert.That(plugin.OwnerId, Is.EqualTo("sharpclaw_providers_openai_compat"));
             Assert.That(plugin.ParameterSpec, Is.SameAs(ProviderParameterSpecs.DeepSeek));
             Assert.That(
                 ProviderCredentialBinding.CreateClient(plugin, new ProviderClientOptions(null), "test-key"),
@@ -415,7 +415,7 @@ public sealed class EdenAIApiClientBehaviorTests
     public void ModuleRegistersEdenAiProvider()
     {
         var services = new ServiceCollection();
-        new OpenAICompatibleProvidersModule().Configure(ModuleTestBuilder.For(services));
+        ModuleTestBuilder.Configure(new OpenAICompatibleProvidersModule(), services);
 
         using var serviceProvider = services.BuildServiceProvider();
         var plugin = serviceProvider.GetServices<IProviderPlugin>()
@@ -424,7 +424,7 @@ public sealed class EdenAIApiClientBehaviorTests
         Assert.Multiple(() =>
         {
             Assert.That(plugin.DisplayName, Is.EqualTo("Eden AI"));
-            Assert.That(plugin.OwnerModuleId, Is.EqualTo("sharpclaw_providers_openai_compat"));
+            Assert.That(plugin.OwnerId, Is.EqualTo("sharpclaw_providers_openai_compat"));
             Assert.That(plugin.ParameterSpec, Is.SameAs(ProviderParameterSpecs.EdenAI));
             Assert.That(
                 ProviderCredentialBinding.CreateClient(plugin, new ProviderClientOptions(null), "test-key"),
@@ -456,7 +456,7 @@ public sealed class EdenAIApiClientBehaviorTests
     public void ProviderTypesCanBeDerivedFromRegisteredPluginMetadata()
     {
         var services = new ServiceCollection();
-        new OpenAICompatibleProvidersModule().Configure(ModuleTestBuilder.For(services));
+        ModuleTestBuilder.Configure(new OpenAICompatibleProvidersModule(), services);
 
         using var serviceProvider = services.BuildServiceProvider();
         var plugins = serviceProvider.GetServices<IProviderPlugin>().ToDictionary(

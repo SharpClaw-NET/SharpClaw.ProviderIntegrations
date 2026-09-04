@@ -1,5 +1,5 @@
 using System.Text.Json;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Modules.Providers.LlamaSharp.LocalModels;
 using SharpClaw.Providers.LocalCommon;
 
@@ -7,7 +7,7 @@ namespace SharpClaw.Modules.Providers.LlamaSharp.Services;
 
 public sealed class LocalModelStore
 {
-    private const string ModuleId = "sharpclaw_providers_llamasharp";
+    private const string SourceId = "sharpclaw_providers_llamasharp";
     private const string StorageName = "local_models";
 
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
@@ -15,15 +15,15 @@ public sealed class LocalModelStore
         PropertyNameCaseInsensitive = true,
     };
 
-    private readonly ModuleDocumentStore<LocalModelFileRecord> _store;
+    private readonly ScopedDocumentStore<LocalModelFileRecord> _store;
 
-    public LocalModelStore(IModuleStorageGateway storageGateway)
+    public LocalModelStore(IScopedStorageGateway storageGateway)
     {
-        _store = new ModuleDocumentStore<LocalModelFileRecord>(
+        _store = new ScopedDocumentStore<LocalModelFileRecord>(
             storageGateway,
-            ModuleId,
+            SourceId,
             StorageName,
-            ModuleId,
+            SourceId,
             JsonOptions);
     }
 

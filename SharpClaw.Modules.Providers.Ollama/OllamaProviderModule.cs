@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Contracts.Providers;
+using SharpClaw.ModuleSDK;
 using SharpClaw.Modules.Providers.Ollama.Clients;
 using SharpClaw.Providers.Common;
 
@@ -19,17 +20,17 @@ public sealed class OllamaProviderModule : ISharpClawModule
         "Ollama Provider",
         "po2");
 
-    public void Configure(ISharpClawModuleBuilder module)
+    public void ConfigureServices(IServiceCollection services)
     {
-        ArgumentNullException.ThrowIfNull(module);
+        ArgumentNullException.ThrowIfNull(services);
 
         var caps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForGeneric);
-        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "ollama", "Ollama (local)", false,
             (options, credential) => new OllamaApiClient(options.Endpoint, credential), caps,
             parameterSpec: ProviderParameterSpecs.Ollama,
             supportsAutomaticEndpointDiscovery: true,
             requiresApiKey: false,
-            ownerModuleId: Identity.Id));
+            OwnerId: Identity.Id));
     }
 }

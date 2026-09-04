@@ -3,7 +3,7 @@
           Condition="'$(ProviderModuleId)' != '' and Exists('$(TargetPath)')">
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(TargetPath)"
-                              PackagePath="contentFiles\any\$(TargetFramework)\modules\$(ProviderModuleId)\$(TargetFileName)"
+                              PackagePath="contentFiles\any\$(TargetFramework)\contributions\$(ProviderModuleId)\$(TargetFileName)"
                               BuildAction="Content"
                               PackageCopyToOutput="true" />
     </ItemGroup>

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using NUnit.Framework;
 using SharpClaw.Contracts.DTOs.Models;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.ModuleSDK;
 using SharpClaw.Modules.Providers.LlamaSharp;
 using SharpClaw.Modules.Providers.LlamaSharp.Handlers;
@@ -24,10 +24,10 @@ public sealed class LlamaSharpEndpointBoundaryTests
         var module = new LlamaSharpProviderModule();
         var manifestPath = Path.Combine(
             TestContext.CurrentContext.TestDirectory,
-            "modules",
+            "contributions",
             module.Identity.Id,
-            "module.json");
-        var manifest = JsonSerializer.Deserialize<ModuleManifest>(
+            "package.json");
+        var manifest = JsonSerializer.Deserialize<PackageManifest>(
             File.ReadAllText(manifestPath),
             JsonOptions)!;
 
@@ -244,7 +244,7 @@ public sealed class LlamaSharpEndpointBoundaryTests
     }
 
     private static HostEndpointRouteRequest Request(
-        ModuleEndpointRouteDescriptor descriptor,
+        EndpointRouteDescriptor descriptor,
         byte[]? body = null,
         IReadOnlyDictionary<string, string[]>? query = null,
         IReadOnlyDictionary<string, string[]>? routeValues = null)

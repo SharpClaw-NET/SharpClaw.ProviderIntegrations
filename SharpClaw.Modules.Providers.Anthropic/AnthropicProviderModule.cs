@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Contracts.Providers;
+using SharpClaw.ModuleSDK;
 using SharpClaw.Modules.Providers.Anthropic.Clients;
 using SharpClaw.Providers.Common;
 
@@ -17,15 +18,15 @@ public sealed class AnthropicProviderModule : ISharpClawModule
         "Anthropic Provider",
         "pa");
 
-    public void Configure(ISharpClawModuleBuilder module)
+    public void ConfigureServices(IServiceCollection services)
     {
-        ArgumentNullException.ThrowIfNull(module);
+        ArgumentNullException.ThrowIfNull(services);
 
         var caps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForAnthropic);
-        module.Services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
+        services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "anthropic", "Anthropic", false,
             (_, credential) => new AnthropicApiClient(credential), caps,
             parameterSpec: ProviderParameterSpecs.Anthropic,
-            ownerModuleId: Identity.Id));
+            OwnerId: Identity.Id));
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
-using SharpClaw.Contracts.Modules;
+using SharpClaw.Contracts.Kernel;
 using SharpClaw.Contracts.Providers;
+using SharpClaw.ModuleSDK;
 using SharpClaw.Modules.Providers.OpenAICompatible.Clients;
 using SharpClaw.Providers.Common;
 
@@ -21,11 +22,9 @@ public sealed class OpenAICompatibleProvidersModule : ISharpClawModule
         "OpenAI-Compatible Providers",
         "po");
 
-    public void Configure(ISharpClawModuleBuilder module)
+    public void ConfigureServices(IServiceCollection services)
     {
-        ArgumentNullException.ThrowIfNull(module);
-        var services = module.Services;
-
+        ArgumentNullException.ThrowIfNull(services);
         var openAiCaps  = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForOpenAI);
         var googleCaps  = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForGoogle);
         var deepSeekCaps = new HeuristicCapabilityResolver(ProviderCapabilityHeuristics.ForDeepSeek);
@@ -46,73 +45,73 @@ public sealed class OpenAICompatibleProvidersModule : ISharpClawModule
                 "Cost API is available for this provider but the current API key "
                 + "lacks the required permissions. OpenAI requires an admin key — "
                 + "replace the configured key with an admin key to retrieve cost data.",
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "deepseek", "DeepSeek", false,
             (_, credential) => new DeepSeekApiClient(credential), deepSeekCaps,
             parameterSpec: ProviderParameterSpecs.DeepSeek,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "openrouter", "OpenRouter", false,
             (_, credential) => new OpenRouterApiClient(credential), genericCaps,
             parameterSpec: ProviderParameterSpecs.OpenRouter,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "eden-ai", "Eden AI", false,
             (_, credential) => new EdenAIApiClient(credential), edenCaps,
             parameterSpec: ProviderParameterSpecs.EdenAI,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "google-gemini-openai", "Google Gemini (OpenAI)", false,
             (_, credential) => new GoogleGeminiOpenAiApiClient(credential), googleCaps,
             parameterSpec: ProviderParameterSpecs.GoogleGeminiOpenAi,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "google-vertex-ai-openai", "Google Vertex AI (OpenAI)", false,
             (_, credential) => new GoogleVertexAIOpenAiApiClient(credential), googleCaps,
             parameterSpec: ProviderParameterSpecs.GoogleVertexAIOpenAi,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "zai", "Z.AI", false,
             (_, credential) => new ZAIApiClient(credential), genericCaps,
             parameterSpec: ProviderParameterSpecs.ZAI,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "vercel-ai-gateway", "Vercel AI Gateway", false,
             (_, credential) => new VercelAIGatewayApiClient(credential), genericCaps,
             parameterSpec: ProviderParameterSpecs.VercelAIGateway,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "xai", "xAI", false,
             (_, credential) => new XAIApiClient(credential), xaiCaps,
             parameterSpec: ProviderParameterSpecs.XAI,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "groq", "Groq", false,
             (_, credential) => new GroqApiClient(credential), genericCaps,
             parameterSpec: ProviderParameterSpecs.Groq,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "cerebras", "Cerebras", false,
             (_, credential) => new CerebrasApiClient(credential), genericCaps,
             parameterSpec: ProviderParameterSpecs.Cerebras,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "mistral", "Mistral", false,
             (_, credential) => new MistralApiClient(credential), mistralCaps,
             parameterSpec: ProviderParameterSpecs.Mistral,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         // GitHub Copilot uses a singleton device-code helper and creates
         // provider clients with the saved OAuth token for chat requests.
@@ -122,20 +121,20 @@ public sealed class OpenAICompatibleProvidersModule : ISharpClawModule
             (_, credential) => new GitHubCopilotApiClient(credential), genericCaps,
             parameterSpec: ProviderParameterSpecs.GitHubCopilot,
             deviceCodeFlow: new DeviceCodeAuthClientFlow(copilotAuth),
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "minimax", "MiniMax", false,
             (_, credential) => new MinimaxApiClient(credential), minimaxCaps,
             parameterSpec: ProviderParameterSpecs.Minimax,
-            ownerModuleId: owner));
+            OwnerId: owner));
 
         services.AddSingleton<IProviderPlugin>(new SimpleProviderPlugin(
             "custom", "Custom (OpenAI-compatible)", true,
             (options, credential) => new CustomOpenAiCompatibleApiClient(options.Endpoint!, credential), genericCaps,
             parameterSpec: ProviderParameterSpecs.Custom,
             isSeedable: false,
-            ownerModuleId: owner));
+            OwnerId: owner));
     }
 
     // No tools, resources, endpoints, or CLI commands — this module only
