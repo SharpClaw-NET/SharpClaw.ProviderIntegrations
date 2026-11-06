@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
+        <Version>0.5.0-dev.20260920.2</Version>
         <PackageId>SharpClaw.Modules.Providers.LlamaSharp</PackageId>
         <Description>SharpClaw provider module that registers local GGUF inference through LLamaSharp.</Description>
         <PackageTags>SharpClaw;providers;llamasharp;llama;gguf;local;ai</PackageTags>
